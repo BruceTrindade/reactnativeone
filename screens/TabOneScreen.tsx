@@ -13,6 +13,14 @@ const mockDepoimentos = [
   },
 ];
 
+// Destructuring assingment
+const DepoimentListItem = ({ depoimento }) => {
+  return (
+    <View style={{ padding: 8 }}>
+      <Text>{depoimento.company}</Text>
+    </View>
+  );  
+};
 
 export default function TabOneScreen({
    navigation,
@@ -22,14 +30,8 @@ export default function TabOneScreen({
       <FlatList
       style={{ width: "100%"}}
         data = {mockDepoimentos}
-        renderItem={(depoimento) => {
-        return (
-          <View>
-            <Text>{depoimento.item.company}</Text>
-          </View>
-        );  
-      }} 
-    />
+        renderItem={({ item }) => <DepoimentListItem depoimento={item} />}
+      />
     </View>
   );
 }
