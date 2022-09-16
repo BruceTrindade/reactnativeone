@@ -4,16 +4,13 @@ import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 
-//mock
-const mockDepoimentos = [
-  {
-    company: "cgTech",
-    describeTheCoffee: "its cool",
-    timestamp: Date.now(),
-  },
-];
+import { getFirestore, collection, onSnapshot } from "firebase/firestore";
 
-// Destructuring assingment
+import { useEffect, useState  } from 'react';
+
+const firestoreDB = getFirestore();
+
+//Destructuring assingment
 const DepoimentListItem = ({ depoimento }) => {
   return (
     <View style={{ padding: 8 }}>
@@ -25,15 +22,21 @@ const DepoimentListItem = ({ depoimento }) => {
 export default function TabOneScreen({
    navigation,
   }: RootTabScreenProps<'TabOne'>) {
-  return (
-    <View style={styles.container}>
-      <FlatList
-      style={{ width: "100%"}}
-        data = {mockDepoimentos}
-        renderItem={({ item }) => <DepoimentListItem depoimento={item} />}
-      />
-    </View>
-  );
+    useEffect(() => {
+      const unsub = onSnapshot(
+        collection(firestoreDB, "depoimento"),
+        (result) => {
+        console.log(
+          result.docs.map((value, index) => {
+            return value.data();    
+          })
+        );
+        // const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
+        // console.log(source, "data: ", doc.data());
+      });
+      return unsub
+    }, []);
+
 }
 
 const styles = StyleSheet.create({
